@@ -370,11 +370,11 @@ with tab2:
 
         # Exchange rate level chart
         normalise_fx = st.toggle(
-            "Normalise exchange rate to base year (index = 100)",
+            "Show exchange rate as growth comparison",
             value=False,
             help=(
-                "When on, all countries start at 100 in the first selected year, "
-                "showing percentage change over time rather than absolute values. "
+                "When on, all countries start at the same point in the first selected year "
+                "so you can compare how much each currency has changed, regardless of its actual value. "
                 "Useful for comparing currencies with very different magnitudes."
             )
         )
@@ -389,8 +389,8 @@ with tab2:
             )
             fx_df = fx_df.merge(base, on="country", how="left")
             fx_df["exchange_rate"] = (fx_df["exchange_rate"] / fx_df["base_val"]) * 100
-            fx_title   = f"Exchange Rate Index Over Time (base = {base_year}, index = 100)"
-            fx_y_label = f"Exchange Rate Index ({base_year} = 100)"
+            fx_title   = f"Exchange Rate Growth Comparison (from {base_year})"
+            fx_y_label = f"Exchange Rate Growth (from {base_year})"
             fx_y_type  = "linear"
         else:
             fx_title   = "Official Exchange Rate Over Time"
@@ -509,12 +509,12 @@ with tab2:
 
         # GDP chart
         normalise_gdp = st.toggle(
-            "Normalise GDP to base year (index = 100)",
+            "Show GDP as growth comparison",
             value=False,
             help=(
-                "When on, shows GDP growth relative to the first selected year rather than "
-                "absolute values. Useful for comparing growth rates across countries with "
-                "very different income levels."
+                "When on, all countries start at the same point in the first selected year "
+                "so you can compare how fast each economy has grown, regardless of its income level. "
+                "Useful for comparing countries with very different income levels."
             )
         )
 
@@ -538,8 +538,8 @@ with tab2:
             )
             gdp_df = gdp_df.merge(base_gdp, on="country", how="left")
             gdp_df["gdp_per_capita"] = (gdp_df["gdp_per_capita"] / gdp_df["base_val"]) * 100
-            gdp_title   = f"GDP per Capita Index Over Time (base = {base_year_gdp}, index = 100)"
-            gdp_y_label = f"GDP per Capita Index ({base_year_gdp} = 100)"
+            gdp_title   = f"GDP per Capita Growth Comparison (from {base_year_gdp})"
+            gdp_y_label = f"GDP per Capita Growth (from {base_year_gdp})"
             gdp_y_type  = "linear"
             # Check if one country dominates and compress others
             gdp_max_idx = (gdp_df.groupby("country")["gdp_per_capita"].mean().max()
@@ -812,7 +812,7 @@ with tab4:
 
     **How to use the Trends tab:**
     The normalise toggle on both the exchange rate and GDP charts converts absolute
-    values into an index (base year = 100), making it possible to compare growth
+    values into a growth comparison, making it possible to compare growth
     rates across countries with very different currency magnitudes or income levels.
     Turn it on when selecting a mixed group of countries (for example, Japan, India,
     and Spain together). The volatility chart below the exchange rate chart shows
