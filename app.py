@@ -87,7 +87,13 @@ def bottom_nav(current):
                 components.html(f"""
                 <script>
                     var tabs = window.parent.document.querySelectorAll('button[role="tab"]');
-                    if (tabs[{i}]) {{ tabs[{i}].click(); window.parent.scrollTo({{top:0,behavior:'smooth'}}); }}
+                    if (tabs[{i}]) {{
+                        tabs[{i}].click();
+                        setTimeout(function() {{
+                            var container = window.parent.document.querySelector('[data-testid="stAppViewContainer"]');
+                            if (container) container.scrollTo({{top: 0, behavior: 'smooth'}});
+                        }}, 100);
+                    }}
                 </script>
                 """, height=0)
 
