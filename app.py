@@ -1,5 +1,6 @@
 import math
 import streamlit as st
+import streamlit.components.v1 as components
 import pandas as pd
 import plotly.express as px
 import plotly.graph_objects as go
@@ -73,8 +74,25 @@ selected_colour_map = {
     for i, country in enumerate(selected_countries)
 }
 
+TAB_NAMES = ["Overview", "Trends", "Compare", "About"]
+
+def bottom_nav(current):
+    st.divider()
+    cols = st.columns(len(TAB_NAMES))
+    for i, (col, name) in enumerate(zip(cols, TAB_NAMES)):
+        if i == current:
+            col.markdown(f"<p style='text-align:center;font-weight:bold;opacity:0.4;'>{name}</p>", unsafe_allow_html=True)
+        else:
+            if col.button(name, key=f"bnav_{current}_{i}", use_container_width=True):
+                components.html(f"""
+                <script>
+                    var tabs = window.parent.document.querySelectorAll('button[role="tab"]');
+                    if (tabs[{i}]) {{ tabs[{i}].click(); window.parent.scrollTo({{top:0,behavior:'smooth'}}); }}
+                </script>
+                """, height=0)
+
 # Tabs
-tab1, tab2, tab3, tab4 = st.tabs(["Overview", "Trends", "Compare", "About"])
+tab1, tab2, tab3, tab4 = st.tabs(TAB_NAMES)
 
 
 # Overview tab
@@ -358,6 +376,7 @@ with tab1:
         height=520
     )
     st.plotly_chart(fig_bubble, use_container_width=True)
+    bottom_nav(0)
 
 
 # Trends tab
@@ -596,6 +615,7 @@ with tab2:
         fig_gdp.update_yaxes(type=gdp_y_type, title_text=gdp_y_label, tickformat=",.0f")
         fig_gdp.update_xaxes(dtick=2)
         st.plotly_chart(fig_gdp, use_container_width=True)
+    bottom_nav(1)
 
 
 # Compare tab
@@ -786,6 +806,7 @@ with tab3:
                         "Darker bars indicate higher average poverty. "
                         "Countries shown have at least one survey data point in the selected year range."
                     )
+    bottom_nav(2)
 
 
 # About tab
@@ -846,3 +867,4 @@ with tab4:
 
     **Author:** Oscar Denche (w2111719), 5DATA004W, University of Westminster, 2026
     """)
+    bottom_nav(3)
